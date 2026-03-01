@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CricHub - Schedule</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="teams.html">Teams</a>
+    <a href="players.html">Players</a>
+    <a href="schedule.html">Schedule</a>
+</nav>
+
+<div class="container">
+    <h1>Match Schedule</h1>
+
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+            <button id="viewList">List View</button>
+            <button id="viewCalendar">Calendar View</button>
+            <button id="exportCSV">Export CSV</button>
+        </div>
+
+        <div id="schedule"></div>
+</div>
+
+<script src="js/script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        if (window.renderSchedule) renderSchedule('list');
+        document.getElementById('viewList').addEventListener('click', ()=>renderSchedule('list'));
+        document.getElementById('viewCalendar').addEventListener('click', ()=>renderSchedule('calendar'));
+        document.getElementById('exportCSV').addEventListener('click', ()=>{ if (window.exportCSV) exportCSV(); });
+    });
+</script>
+
+</body>
+</html>

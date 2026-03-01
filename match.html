@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Match - CricHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html">Home</a>
+            <a href="teams.html">Teams</a>
+            <a href="players.html">Players</a>
+            <a href="schedule.html">Schedule</a>
+            <a href="match.html">Live Match</a>
+            <a href="admin.html">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- ================= HERO ================= -->
+        <section class="hero">
+            <header>
+                <h1>🏏 Live Match Dashboard</h1>
+                <p>Real-time Cricket Updates</p>
+            </header>
+        </section>
+
+        <!-- ================= MATCH SELECTOR ================= -->
+        <section class="match-selector">
+            <label for="matchSelect">Select a Match:</label>
+            <select id="matchSelect" onchange="loadMatchData()">
+                <option value="0">India vs Australia</option>
+                <option value="1">England vs Pakistan</option>
+                <option value="2">South Africa vs New Zealand</option>
+            </select>
+        </section>
+
+        <!-- ================= MAIN SCOREBOARD ================= -->
+        <div class="scoreboard-container">
+            <div class="team-info">
+                <img id="logo1" src="images/code.jpg" alt="Team 1" class="team-logo-large" onerror="this.src='images/placeholder.svg'">
+                <div class="team-details">
+                    <h2 id="team1Name">India</h2>
+                    <p id="team1Score" class="score-display">0/0</p>
+                </div>
+            </div>
+
+            <div class="vs-section">
+                <p>VS</p>
+                <p id="matchStatus" class="status-badge">🟢 LIVE</p>
+            </div>
+
+            <div class="team-info">
+                <div class="team-details team-details-right">
+                    <h2 id="team2Name">Australia</h2>
+                    <p id="team2Score" class="score-display">0/0</p>
+                </div>
+                <img id="logo2" src="images/australiaa.png" alt="Team 2" class="team-logo-large" onerror="this.src='images/placeholder.svg'">
+            </div>
+        </div>
+
+        <!-- ================= MATCH STATS ================= -->
+        <div class="match-stats">
+            <div class="stat-box">
+                <label>Current Over</label>
+                <h3 id="overs">0.0</h3>
+            </div>
+            <div class="stat-box">
+                <label>Run Rate</label>
+                <h3 id="runRate">0.00</h3>
+            </div>
+            <div class="stat-box">
+                <label>Time</label>
+                <h3 id="matchTime">7:30 PM</h3>
+            </div>
+        </div>
+
+        <!-- ================= MATCH DETAILS ================= -->
+        <div class="card match-details">
+            <h3>Match Information</h3>
+            <p><strong>Venue:</strong> <span id="venue">Mumbai Cricket Ground</span></p>
+            <p><strong>Status:</strong> <span id="status">Waiting to start...</span></p>
+            <p><strong>Last Update:</strong> <span id="lastUpdate">--</span></p>
+        </div>
+
+        <!-- ================= CONTROLS ================= -->
+        <div class="button-group">
+            <button onclick="startLiveSimulation()" class="btn-primary">▶️ Start Live Simulation</button>
+            <button onclick="stopLiveSimulation()" class="btn-secondary">⏹️ Stop</button>
+            <button onclick="resetMatch()" class="btn-secondary">🔄 Reset</button>
+        </div>
+
+        <!-- ================= COMMENTARY ================= -->
+        <div class="card">
+            <h3>Live Commentary</h3>
+            <div id="commentary" class="commentary-box">
+                <p class="commentary-item">Match will start soon. Stay tuned!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <p>&copy; 2026 CricHub · All rights reserved</p>
+    </footer>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script src="js/script.js"></script>
+    <script>
+        // Enhanced match script: load matchData, two-innings simulation, commentary persistence
+        let currentMatchIndex = 0;
+        let liveSimulationActive = false;
+        let matchState = {
+            innings: 1,
+            team1Runs: 0,
+            team1Wickets: 0,
+            team2Runs: 0,
+            team2Wickets: 0,
+            overs: 0,
+            balls: 0,
+            runRate: 0,
+            commentary: []
+        };
+
+        const matches = [
+            { team1: "India", team2: "Australia", logo1: "images/code.jpg", logo2: "images/australiaa.png", time: "7:30 PM", venue: "Mumbai Cricket Ground", live: true },
+            { team1: "England", team2: "Pakistan", logo1: "images/pppppp.png", logo2: "images/newsi.png", time: "5:00 PM", venue: "Lord's Cricket Ground", live: false },
+            { team1: "South Africa", team2: "New Zealand", logo1: "images/south.jpg", logo2: "images/cooooo.png", time: "3:00 PM", venue: "Newlands, Cape Town", live: false }
+        ];
+
+        function loadMatchData() {
+            // prefer matchData in localStorage if present
+            const stored = JSON.parse(localStorage.getItem('matchData') || 'null');
+            if (stored) {
+                const idx = matches.findIndex(m => m.team1 === stored.team1 && m.team2 === stored.team2);
+                if (idx >= 0) currentMatchIndex = idx;
+            } else {
+                currentMatchIndex = parseInt(document.getElementById("matchSelect").value || 0);
+            }
+            resetMatch();
+            displayMatchData();
+        }
+
+        function displayMatchData() {
+            const match = matches[currentMatchIndex];
+            document.getElementById("team1Name").innerText = match.team1;
+            document.getElementById("team2Name").innerText = match.team2;
+            document.getElementById("logo1").src = match.logo1;
+            document.getElementById("logo2").src = match.logo2;
+            document.getElementById("matchTime").innerText = match.time;
+            document.getElementById("venue").innerText = match.venue;
+            document.getElementById("matchStatus").innerText = match.live ? "🟢 LIVE" : "⚪ Upcoming";
+            updateScoreDisplay();
+            // load persisted commentary
+            const key = `commentary_${match.team1}_vs_${match.team2}`;
+            try {
+                const saved = JSON.parse(localStorage.getItem(key) || 'null');
+                if (saved && Array.isArray(saved)) {
+                    matchState.commentary = saved;
+                    renderCommentary();
+                }
+            } catch (e) {}
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById("team1Score").innerText = `${matchState.team1Runs}/${matchState.team1Wickets}`;
+            document.getElementById("team2Score").innerText = `${matchState.team2Runs}/${matchState.team2Wickets}`;
+            document.getElementById("overs").innerText = `${Math.floor(matchState.overs)}.${matchState.balls}`;
+            const runs = matchState.innings === 1 ? matchState.team1Runs : matchState.team2Runs;
+            document.getElementById("runRate").innerText = (matchState.overs > 0 ? (runs / matchState.overs).toFixed(2) : "0.00");
+            document.getElementById("lastUpdate").innerText = new Date().toLocaleTimeString();
+        }
+
+        function startLiveSimulation() {
+            if (liveSimulationActive) return;
+            liveSimulationActive = true;
+            document.getElementById("status").innerText = "🔴 Match in Progress";
+
+            const interval = setInterval(() => {
+                if (!liveSimulationActive) { clearInterval(interval); return; }
+
+                // simulate depending on innings
+                const runsThisBall = Math.floor(Math.random() * 7);
+                const isWicket = Math.random() < 0.12;
+
+                if (matchState.innings === 1) {
+                    matchState.team1Runs += runsThisBall;
+                    if (isWicket) matchState.team1Wickets++;
+                } else {
+                    matchState.team2Runs += runsThisBall;
+                    if (isWicket) matchState.team2Wickets++;
+                }
+
+                if (isWicket) {
+                    addCommentary(`WICKET! ${getBattingTeam()} loses a wicket!`);
+                } else if (runsThisBall > 0) {
+                    addCommentary(`${runsThisBall} RUNS!`);
+                } else {
+                    addCommentary('Dot ball.');
+                }
+
+                matchState.balls++;
+                if (matchState.balls === 6) {
+                    matchState.balls = 0;
+                    matchState.overs++;
+                    addCommentary(`End of Over ${Math.floor(matchState.overs)} (${getBattingTeam()})`);
+                }
+
+                // innings transition
+                if (matchState.overs >= 20) {
+                    if (matchState.innings === 1) {
+                        // move to second innings
+                        matchState.innings = 2;
+                        const target = matchState.team1Runs + 1;
+                        addCommentary(`End of 1st innings. Target for ${matches[currentMatchIndex].team2} is ${target}`);
+                        // reset overs/balls for second innings
+                        matchState.overs = 0; matchState.balls = 0;
+                        document.getElementById('status').innerText = '🔴 2nd Innings';
+                    } else {
+                        stopLiveSimulation();
+                        document.getElementById('status').innerText = '✅ Match Completed';
+                        addCommentary('Match completed.');
+                    }
+                }
+
+                // simple check: chasing team reached target
+                if (matchState.innings === 2) {
+                    const target = matchState.team1Runs + 1;
+                    if (matchState.team2Runs >= target) {
+                        stopLiveSimulation();
+                        addCommentary(`${matches[currentMatchIndex].team2} reached target and won!`);
+                        document.getElementById('status').innerText = '✅ Match Completed';
+                    }
+                }
+
+                persistCommentary();
+                updateScoreDisplay();
+            }, 1500);
+        }
+
+        function stopLiveSimulation() {
+            liveSimulationActive = false;
+            document.getElementById("status").innerText = "⏸️ Match Paused";
+        }
+
+        function resetMatch() {
+            liveSimulationActive = false;
+            matchState = { innings:1, team1Runs:0, team1Wickets:0, team2Runs:0, team2Wickets:0, overs:0, balls:0, runRate:0, commentary:[] };
+            document.getElementById("commentary").innerHTML = '<p class="commentary-item">Match will start soon. Stay tuned!</p>';
+            document.getElementById("status").innerText = "Waiting to start...";
+            updateScoreDisplay();
+            // clear persisted commentary for this match
+            const key = `commentary_${matches[currentMatchIndex].team1}_vs_${matches[currentMatchIndex].team2}`;
+            localStorage.removeItem(key);
+        }
+
+        function addCommentary(text) {
+            matchState.commentary.unshift(text);
+            if (matchState.commentary.length > 50) matchState.commentary.pop();
+            renderCommentary();
+        }
+
+        function renderCommentary(){
+            const commentaryDiv = document.getElementById("commentary");
+            commentaryDiv.innerHTML = matchState.commentary.map(c => `<p class="commentary-item">• ${c}</p>`).join('');
+        }
+
+        function persistCommentary(){
+            const key = `commentary_${matches[currentMatchIndex].team1}_vs_${matches[currentMatchIndex].team2}`;
+            try { localStorage.setItem(key, JSON.stringify(matchState.commentary)); } catch(e){}
+        }
+
+        function getBattingTeam(){
+            return matchState.innings === 1 ? matches[currentMatchIndex].team1 : matches[currentMatchIndex].team2;
+        }
+
+        // initialize
+        document.addEventListener('DOMContentLoaded', function(){
+            loadMatchData();
+        });
+    </script>
+
+</body>
+</html>

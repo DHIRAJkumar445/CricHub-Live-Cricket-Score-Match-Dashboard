@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Admin - CricHub</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<nav class="main-nav">
+		<div class="nav-container">
+			<a href="index.html">Home</a>
+			<a href="teams.html">Teams</a>
+			<a href="players.html">Players</a>
+			<a href="schedule.html">Schedule</a>
+			<a href="register.html">Register</a>
+		</div>
+	</nav>
+
+	<div class="container">
+		<h1>Admin: Manage Matches</h1>
+
+		<div class="card admin-card">
+			<form id="adminForm" onsubmit="addMatch(); return false;">
+				<div style="display:flex;gap:10px;flex-wrap:wrap;">
+					<input id="team1" name="team1" placeholder="Team 1" required>
+					<input id="team2" name="team2" placeholder="Team 2" required>
+					<input id="time" name="time" placeholder="Match Time (e.g., 7:30 PM)">
+					<input id="venue" name="venue" placeholder="Venue (optional)">
+					<input id="logoFile" type="file" accept="image/*">
+				</div>
+
+				<div style="margin-top:12px;display:flex;gap:8px;">
+					<button type="submit">Add Match</button>
+					<button type="button" onclick="renderAdminMatches()">Refresh List</button>
+					<button type="button" onclick="showConfirm('Clear all matches? This cannot be undone.', function(){ localStorage.removeItem('matches'); renderAdminMatches(); });">Clear All</button>
+				</div>
+			</form>
+
+			<div style="margin-top:8px;">
+				<label for="csvFile">Import matches (CSV):</label>
+				<input id="csvFile" type="file" accept=".csv">
+				<button type="button" id="importCsvBtn">Import CSV</button>
+			</div>
+
+			<div style="margin-top:12px;">
+				<label for="cricApiKey">Cricket API Key:</label>
+				<input id="cricApiKey" placeholder="Paste API key here">
+				<button type="button" id="saveApiKeyBtn">Save API Key</button>
+				<p style="font-size:0.9rem;color:#666;margin-top:6px">Get an API key from <a href="https://www.cricapi.com/" target="_blank">cricapi.com</a> and paste it here. This is required for real live data.</p>
+			</div>
+
+			<p id="adminMsg" style="margin-top:8px;color:green;min-height:18px"></p>
+		</div>
+
+		<div class="card" style="margin-top:18px;">
+			<h3>Stored Matches</h3>
+			<div id="adminMatchesList">No matches yet.</div>
+		</div>
+
+		<!-- Confirm Modal -->
+		<div id="confirmModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="confirmBody" tabindex="-1">
+			<div class="modal-content">
+				<div style="display:flex;justify-content:flex-end"><button class="modal-close" aria-label="Close dialog">×</button></div>
+				<div id="confirmBody"></div>
+				<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+					<button id="confirmCancel">Cancel</button>
+					<button id="confirmOk" style="background:#e74c3c">Confirm</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<script type="module">
+		import { checkLoggedIn } from './js/auth.js';
+		if (!checkLoggedIn()) {
+			window.location.href = 'login.html?redirect=admin.html';
+		}
+	</script>
+	<script src="js/script.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function(){
+			if (!window.checkLoggedIn || !window.checkLoggedIn()) return;
+			if (window.renderAdminMatches) renderAdminMatches();
+			const apiInput = document.getElementById('cricApiKey');
+			if (apiInput) apiInput.value = localStorage.getItem('cricApiKey') || '';
+			const saveBtn = document.getElementById('saveApiKeyBtn');
+			if (saveBtn) saveBtn.addEventListener('click', ()=>{
+				const v = document.getElementById('cricApiKey').value.trim();
+				localStorage.setItem('cricApiKey', v);
+				if (window.showToast) window.showToast('API key saved', 'success');
+				if (window.renderLiveMatchesTo) window.renderLiveMatchesTo('liveApi');
+			});
+		});
+	</script>
+</body>
+</html>

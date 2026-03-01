@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Register - CricHub</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="main-nav">
+    <div class="nav-container">
+      <a href="index.html">Home</a>
+      <a href="teams.html">Teams</a>
+      <a href="players.html">Players</a>
+      <a href="schedule.html">Schedule</a>
+    </div>
+  </nav>
+
+  <div class="login-page">
+    <div class="login-card card">
+      <h2>Create Account</h2>
+      <p class="subtitle">Join CricHub to manage matches and follow live scores</p>
+
+      <form id="registerForm" onsubmit="registerUser(event)">
+        <input id="username" name="username" type="text" placeholder="Username" autocomplete="username" required>
+        <input id="email" name="email" type="email" placeholder="Email (optional)" autocomplete="email">
+        <input id="password" name="password" type="password" placeholder="Password (min 4 chars)" autocomplete="new-password" required minlength="4">
+
+        <div class="login-actions">
+          <button type="submit">Register</button>
+        </div>
+        <div id="authError" class="login-error" aria-live="polite"></div>
+      </form>
+
+      <p style="font-size:0.9rem;color:#666;margin-top:12px;">
+        Already have an account? <a href="login.html">Login</a>
+      </p>
+    </div>
+  </div>
+
+  <script type="module" src="js/auth.js"></script>
+  <script>
+    if (window.checkLoggedIn && window.checkLoggedIn()) {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

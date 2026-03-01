@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CricHub - Teams</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="teams.html">Teams</a>
+    <a href="players.html">Players</a>
+    <a href="schedule.html">Schedule</a>
+</nav>
+
+<div class="container">
+        <h1>Cricket Teams</h1>
+
+        <p>Click a team to view its matches or mark favorite.</p>
+
+        <div id="teams" class="team-list"></div>
+
+        <div id="matches"></div>
+
+        <!-- Team Detail Modal -->
+        <div id="teamModal" class="modal" aria-hidden="true">
+            <div class="modal-content">
+                <button class="modal-close" aria-label="Close">×</button>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

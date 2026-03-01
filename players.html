@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CricHub - Players</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="teams.html">Teams</a>
+    <a href="players.html">Players</a>
+    <a href="schedule.html">Schedule</a>
+</nav>
+
+<div class="container">
+    <h1>Top Players</h1>
+        <div class="card">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+                <input id="playerSearch" placeholder="Search player name" style="flex:1;max-width:360px">
+                <select id="filterTeam">
+                    <option value="">All Teams</option>
+                </select>
+                <select id="filterRole">
+                    <option value="">All Roles</option>
+                    <option value="Batsman">Batsman</option>
+                    <option value="Bowler">Bowler</option>
+                    <option value="All-rounder">All-rounder</option>
+                    <option value="Wicket-keeper">Wicket-keeper</option>
+                </select>
+                <button id="resetPlayers">Reset</button>
+            </div>
+        </div>
+
+        <div id="playersList" class="card" style="margin-top:12px"></div>
+</div>
+<script src="js/script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        if (window.renderPlayers) renderPlayers();
+        if (window.initPlayersFilters) initPlayersFilters();
+    });
+</script>
+</body>
+</html>
+

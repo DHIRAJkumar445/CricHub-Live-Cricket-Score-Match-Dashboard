@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CricHub - Live Cricket Updates</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏏</text></svg>">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="main-nav nav-sticky">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🏏 CricHub</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="teams.html">Teams</a>
+                <a href="players.html">Players</a>
+                <a href="schedule.html">Schedule</a>
+                <a href="match.html">Live Match</a>
+                <a href="admin.html">Admin</a>
+                <a href="register.html">Register</a>
+            </div>
+            <div class="nav-actions">
+                <span id="userGreeting" class="user-greeting"></span>
+                <button id="logoutBtn" onclick="logoutUser()" class="nav-btn logout-btn">Logout</button>
+                <button id="darkToggle" class="nav-btn" title="Toggle dark mode">🌓</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content container">
+            <header class="hero-header">
+                <h1 class="hero-title">Welcome to CricHub</h1>
+                <p class="hero-subtitle">Your one-stop destination for live cricket scores, updates &amp; match schedules</p>
+                <a href="match.html" class="hero-cta">View Live Matches →</a>
+            </header>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- ================= DASHBOARD ================= -->
+        <div class="dashboard">
+
+  <div class="dash-card">
+    <h3 id="totalMatches">0</h3>
+    <p>Total Matches</p>
+  </div>
+
+  <div class="dash-card">
+    <h3 id="liveMatches">0</h3>
+    <p>Live Matches</p>
+  </div>
+
+  <div class="dash-card">
+    <h3 id="totalTeams">0</h3>
+    <p>Teams</p>
+  </div>
+
+  <div class="dash-card">
+    <h3 id="upcomingMatches">0</h3>
+    <p>Upcoming</p>
+  </div>
+
+</div>
+
+        <!-- ================= SEARCH & LOAD ================= -->
+        <div class="search-bar">
+            <div class="search-input-wrap">
+                <input type="text" id="search" placeholder="Search team name" aria-label="Search team name">
+                <div id="searchSuggestions" class="search-suggestions" aria-live="polite"></div>
+            </div>
+            <button id="loadMatches" type="button">Load Matches</button>
+        </div>
+        <div id="loader" class="loader" style="display:none;"></div>
+
+        <!-- ================= FEATURED MATCH ================= -->
+        <section class="featured-match" id="featuredMatch"></section>
+
+        <!-- ================= MATCHES ================= -->
+        <section class="matches-section">
+            <h2 class="section-title">Today's Matches</h2>
+            <div id="matches" class="matches-grid"></div>
+        </section>
+        <div id="liveApi" class="live-api-section"></div>
+
+        <!-- ================= SCHEDULE SECTION ================= -->
+        <section class="schedule-section">
+            <h2>Match Schedule</h2>
+
+            <div id="schedule"></div>
+            <div id="players"></div>
+            <section id="pointsTable">
+  <h2>IPL Points Table</h2>
+
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Team</th>
+        <th>Matches</th>
+        <th>Win</th>
+        <th>Loss</th>
+        <th>Points</th>
+      </tr>
+    </thead>
+
+    <tbody id="points-body"></tbody>
+  </table>
+</section>
+
+
+            <!-- ================= PAGINATION ================= -->
+            <div class="pagination">
+                <button id="prevBtn">Previous</button>
+                <span id="pagination-info">Page 1</span>
+                <button id="nextBtn">Next</button>
+            </div>
+        </section>
+
+        <!-- ================= TEAMS SECTION ================= -->
+        <section class="teams-section">
+            <h2>Teams</h2>
+            <p>Click on a team to view its matches</p>
+
+            <!-- JS yahan teams inject karega -->
+            <div id="teams" class="team-list"></div>
+        </section>
+
+        <p class="muted">Your one stop destination for cricket information.</p>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">🏏 CricHub</div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="teams.html">Teams</a>
+                <a href="players.html">Players</a>
+                <a href="schedule.html">Schedule</a>
+                <a href="match.html">Live Match</a>
+            </div>
+            <p class="footer-tagline">Your one stop destination for cricket information.</p>
+            <p class="footer-copy">&copy; 2026 CricHub · All rights reserved</p>
+        </div>
+    </footer>
+
+    <!-- ================= SCRIPT ================= -->
+    <script src="js/script.js"></script>
+
+
+    <script>
+      // initialize UI helpers
+      document.addEventListener('DOMContentLoaded', function(){
+        if (window.showUserGreeting) showUserGreeting();
+        if (window.initSearchAutocomplete) initSearchAutocomplete();
+        if (window.initDarkModeToggle) initDarkModeToggle();
+      });
+    </script>
+</body>
+</html>
